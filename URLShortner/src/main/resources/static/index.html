@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 1rem;
+        }
+        button {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>URL Shortener</h1>
+    <input type="text" id="longUrl" placeholder="Enter URL to shorten" />
+    <button onclick="shortenUrl()">Shorten</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+        function shortenUrl() {
+    const longUrl = document.getElementById('longUrl').value;
+    console.log("Long URL: ", longUrl);
+    if (!longUrl) {
+        alert('Please enter a URL!');
+        return;
+    }
+
+    // Send POST request to backend to shorten URL
+    fetch('http://localhost:8080/api/shorten?longUrl=' + encodeURIComponent(longUrl), {
+        method: 'POST' // Ensure POST method is used
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text(); // Get the shortened URL from the response body
+    })
+    .then(data => {
+        // Display the shortened URL
+        document.getElementById('result').innerHTML = 'Shortened URL: <a href="' + data + '" target="_blank">' + data + '</a>';
+    })
+    .catch(error => {
+        console.error('Error shortening URL:', error);
+        document.getElementById('result').innerText = 'Error shortening URL!';
+    });
+}
+
+    </script>
+
+</body>
+</html>
